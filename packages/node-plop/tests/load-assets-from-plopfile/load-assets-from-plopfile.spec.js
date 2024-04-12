@@ -173,4 +173,21 @@ describe("load-assets-from-plopfile", function () {
     expect(plop.getPartialList().length).toBe(1);
     expect(plop.getPartialList()[0]).toBe("p1");
   });
+
+  test("plop.load should throw a error on invalid plopfile extensions", async function () {
+    const plop = await nodePlop();
+
+    expect(async () =>
+      plop.load(path.join(mockPath, "plopfile.json")),
+    ).rejects.toThrow(
+      `plopfile must have a valid extension: ${[
+        "js",
+        "cjs",
+        "mjs",
+        "ts",
+        "cts",
+        "mts",
+      ].join(", ")}`,
+    );
+  });
 });

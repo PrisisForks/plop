@@ -43,6 +43,19 @@ async function nodePlop(plopfilePath = "", plopCfg = {}) {
     actionTypes[name] = fn;
   };
 
+  function validateAllowedPlopfileExtensions(plopfilePath) {
+    const extensions = ["js", "cjs", "mjs", "ts", "cts", "mts"];
+    const hasMatch = extensions.some((extension) =>
+      plopfilePath.endsWith(`.${extension}`),
+    );
+
+    if (!hasMatch) {
+      throw new Error(
+        `plopfile must have a valid extension: ${extensions.join(", ")}`,
+      );
+    }
+  }
+
   function renderString(template, data) {
     Object.keys(helpers).forEach((h) =>
       handlebars.registerHelper(h, helpers[h]),
@@ -258,6 +271,9 @@ async function nodePlop(plopfilePath = "", plopCfg = {}) {
   if (plopfilePath) {
     plopfilePath = path.resolve(plopfilePath);
     const plopFileName = path.basename(plopfilePath);
+
+    validateAllowedPlopfileExtensions(plopfilePath);
+
     setPlopfilePath(plopfilePath);
     loadPackageJson();
 
